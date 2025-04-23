@@ -1,5 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+'use strict'
+Object.defineProperty(exports, '__esModule', { value: true })
 exports.default = {
-  BAD_REQUEST: 400,
-};
+    BAD_REQUEST: 400,
+}
