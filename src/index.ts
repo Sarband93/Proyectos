@@ -1,40 +1,41 @@
-import express, { NextFunction, Request, Response } from 'express'
-import cors from 'cors'
-import dotenv from 'dotenv'
-import { connectDB } from './database'
-import routing from './routes/menor_route'
+import express, { NextFunction, Request, Response } from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import { connectDB } from "./database";
+import routing from "./routes/menor_route";
 
-dotenv.config()
+dotenv.config();
 
-const app = express()
-const port = process.env.PORT || 3000
+const app = express();
+const port = process.env.PORT || 3000;
 
 // Middlewares
-app.use(cors())
-app.use(express.json())
+app.use(cors());
+app.use(express.json());
 
-
-routing(app)
+routing(app);
 
 // Ruta de prueba
-app.get('/', (req, res) => {
-  res.send('✅ API  de Menores funcionando')
-})
-
-
+app.get("/", (req, res) => {
+  res.send("✅ API  de Menores funcionando");
+});
 
 // Conectar a la base de datos
-connectDB()
+connectDB();
 
 // Levantar el servidor
 app.listen(port, () => {
-  console.log(`🚀 Servidor escuchando en http://localhost:${port}`)
-})
+  console.log(`🚀 Servidor escuchando en http://localhost:${port}`);
+});
 
-
-function errorHandler(err: Error, req: Request, res: Response, next: NextFunction) {
+function errorHandler(
+  err: Error,
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   res.status((err as any).statusCode) || 500;
-  res.json({ error: 1, message: err.message})
+  res.json({ error: 1, message: err.message });
 }
 
 // function errorHandler(
@@ -50,6 +51,4 @@ function errorHandler(err: Error, req: Request, res: Response, next: NextFunctio
 //   })
 // }
 
-app.use(errorHandler)
-
-
+app.use(errorHandler);
