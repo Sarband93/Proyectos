@@ -9,6 +9,10 @@ const menorSchema = new mongoose_1.Schema({
         type: String,
         required: true
     },
+    apellido: {
+        type: String,
+        required: true
+    },
     edad: {
         type: Number,
         required: true

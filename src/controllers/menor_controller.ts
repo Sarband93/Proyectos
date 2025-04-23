@@ -1,7 +1,10 @@
 import { Request, Response, NextFunction } from 'express'
 import { Menor } from '../models/menor_model'
 import { get } from 'mongoose'
+import { Types } from 'mongoose'
+// Errors Imports
 import BadRequestError from '../server/errors/BadRequestError'
+import NotFoundError from '../server/errors/NotFoundError'
 
 async function getMenor(
     req: Request,
@@ -11,7 +14,7 @@ async function getMenor(
     try {
         throw new Error('error de prueba')
         res.status(200).json({
-            mensaje: 'Endpoint funcionando correctamente',
+            message: 'Endpoint funcionando correctamente',
         })
     } catch (error) {
         next(error)
@@ -32,7 +35,7 @@ async function postMenor(
             const menorGuardado = await menor.save()
 
             res.status(200).json({
-                mensaje: 'El chaval ha sido guardado correctamente',
+                message: 'El chaval ha sido guardado correctamente',
                 menor: menorGuardado
             })
         } catch (error) {
@@ -47,49 +50,51 @@ async function postMenor(
 
 async function getListaMenores(
     req: Request,
-    res: Response
+    res: Response,
+    next: NextFunction
 ) {
     try {
         const menores = await Menor.find()
 
         res.status(200).json({
-            mensaje: "Lista de menores correcta",
+            message: "Lista de menores correcta",
             menores
         })
     } catch (error) {
         console.log(error)
+        next(error)
         res.status(500).json({
-            mensaje: 'Error al listar menores'
+            message: 'Error al listar menores'
         })
     }
 }
 
-export async function buscarMenorPorGrupo(req: Request, res: Response) {
+export async function buscarMenorPorGrupo(req: Request, res: Response, next: NextFunction) {
     try {
       const { nombreGrupo } = req.params
   
       const menores = await Menor.find({ grupo: nombreGrupo })
   
       res.status(200).json({
-        mensaje: `Menores del grupo ${nombreGrupo}`,
+        message: `Menores del grupo ${nombreGrupo}`,
         menores
       })
     } catch (error) {
       res.status(500).json({
-        mensaje: 'Error al buscar por grupo',
+        message: 'Error al buscar por grupo',
         error
       })
     }
   }
 
-  export async function buscarMenorPorApellido(req: Request, res: Response) {
+  export async function buscarMenorPorApellido(req: Request, res: Response, next: NextFunction) {
     try{
         const { apellido } = req.params
         
         const menores = await Menor.find({ apellido })
 
         res.status(200).json({
-            mensaje: `Menores con apellido ${apellido}`,
+            message: `Menores con apellido ${apellido}`,
             menores
         })
     } catch (error) {
@@ -100,10 +105,72 @@ export async function buscarMenorPorGrupo(req: Request, res: Response) {
     }
   }
 
+  export async function modificarMenor(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+        const { id } = req.params
+        const { nombre, apellido, edad, grupo } = req.body
+
+        // Comprueba si el ID es valido
+        if (!Types.ObjectId.isValid(id)) {
+            throw new BadRequestError('ID no válido');
+        }
+
+        // Busca y actualiza el menor
+        const menorActualizado = await Menor.findByIdAndUpdate(
+            id,
+            { nombre, apellido, edad, grupo }, 
+            { new: true} // Devuelve el objeto actualizado
+        )
+
+        if (!menorActualizado) {
+            throw new NotFoundError('Menor no encontrado')
+        }
+
+        res.status(200).json({
+            message: 'Menor actualizado correctamente',
+            menor: menorActualizado
+        })
+    } catch (error) {
+        console.error(error)
+        next(error)
+    }
+  }
+
+   // Insertar varios menores a la bd
+   export async function insertarVariosMenores(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+        const listaMenores = req.body
+
+        // if (!Array.isArray(listaMenores)) {
+        //     res.status(400).json({ message: 'Debes insertar varios menores'})
+        //     return
+        // }
+        if (!Array.isArray(listaMenores)) {
+            throw new BadRequestError('Debes insertar varios menores');
+        }
+
+        const resultado = await Menor.insertMany(listaMenores)
+
+
+        // res.status(200).json({
+        res.json({
+            message: 'menores insertados correctamente',
+            menores: resultado,
+        })
+    } catch (error) {
+        next(error)
+    }
+   }
+
+ 
+
 export default {
     getMenor,
     postMenor,
     getListaMenores,
     buscarMenorPorGrupo,
-    buscarMenorPorApellido
+    buscarMenorPorApellido,
+    modificarMenor,
+    insertarVariosMenores
 }
+

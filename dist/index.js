@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const dotenv_1 = __importDefault(require("dotenv"));
+const database_1 = require("./database");
 const menor_route_1 = __importDefault(require("./routes/menor_route"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
@@ -18,23 +19,26 @@ app.use(express_1.default.json());
 app.get('/', (req, res) => {
     res.send('✅ API  de Menores funcionando');
 });
-// Recibir un menor
-// app.post('/', (req, res) => {
-//   const menor = req.body
-//   console.log('Chaval recibido:', menor)
-//   res.status(200).json({
-//     mensaje: 'El chaval ha sido recibido correctamente',
-//     menor: {
-//       id: menor.id,
-//       nombre: menor.nombre,
-//       edad: menor.edad,
-//       grupo: menor.grupo
-//     }
-//   })
-// })
 // Conectar a la base de datos
-//connectDB()
+(0, database_1.connectDB)();
 // Levantar el servidor
 app.listen(port, () => {
     console.log(`🚀 Servidor escuchando en http://localhost:${port}`);
 });
+function errorHandler(err, req, res, next) {
+    res.status(err.status) || 500;
+    res.json({ error: 1, message: err.message });
+}
+// function errorHandler(
+//   err: Error & { status?: number },
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ): void {
+//   const statusCode = err.status ?? 500 // ⬅ si no hay status, usamos 500
+//   res.status(statusCode).json({
+//     error: 1,
+//     message: err.message || 'Error interno del servidor'
+//   })
+// }
+app.use(errorHandler);

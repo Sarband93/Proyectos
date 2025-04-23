@@ -12,7 +12,7 @@ const port = process.env.PORT || 3000
 // Middlewares
 app.use(cors())
 app.use(express.json())
-app.use(errorHandler)
+
 
 routing(app)
 
@@ -20,6 +20,7 @@ routing(app)
 app.get('/', (req, res) => {
   res.send('✅ API  de Menores funcionando')
 })
+
 
 
 // Conectar a la base de datos
@@ -30,9 +31,25 @@ app.listen(port, () => {
   console.log(`🚀 Servidor escuchando en http://localhost:${port}`)
 })
 
-// Error handler function
+
 function errorHandler(err: Error, req: Request, res: Response, next: NextFunction) {
-  res.status((err as any).status) || 500;
+  res.status((err as any).statusCode) || 500;
   res.json({ error: 1, message: err.message})
 }
+
+// function errorHandler(
+//   err: Error & { status?: number },
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ): void {
+//   const statusCode = err.status ?? 500 // ⬅ si no hay status, usamos 500
+//   res.status(statusCode).json({
+//     error: 1,
+//     message: err.message || 'Error interno del servidor'
+//   })
+// }
+
+app.use(errorHandler)
+
 
