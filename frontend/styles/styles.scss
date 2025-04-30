@@ -1,0 +1,37 @@
+//
+// Styles
+//
+
+// Import Custom Variables
+@import 'variables.scss';
+
+// Import Bootstrap
+@import 'bootstrap/scss/bootstrap.scss';
+
+// Import Custom SCSS
+@import 'global';
+
+// Layout
+@import 'alt_layout/layout';
+@import 'alt_layout/sidemenu';
+// @import 'layout/authentication';
+// @import 'layout/dashboard-default';
+// @import 'layout/dashboard-fixed';
+@import 'layout/error';
+@import 'layout/footer';
+
+// Navigation
+@import 'navigation/viewHeader';
+
+// Swal2
+@import 'sweetalert2/dist/sweetalert2.min.css';
+
+// Vue-select
+@import 'vue-select/dist/vue-select.css';
+
+// Vue neat modal
+@import 'vue-neat-modal/dist/vue-neat-modal.css';
+.vue-neat-modal-backdrop,
+.vue-neat-modal-wrapper {
+    z-index: 1041;
+}

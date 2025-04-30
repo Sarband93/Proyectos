@@ -1,0 +1,26 @@
+footer {
+    font-size: 0.95rem;
+    .footer-version {
+        display: flex;
+        gap: 0.5rem;
+    }
+    .footer-copyright {
+        color: $gray-700;
+    }
+
+    &.full {
+        padding: 0.25rem 1rem;
+        background-color: red;
+
+        box-shadow: 0 -0.5rem 1rem rgb(0 0 0 / 15%) !important;
+
+        .footer-display {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .footer-version {
+            display: block;
+        }
+    }
+}

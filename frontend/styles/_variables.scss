@@ -1,0 +1,32 @@
+//
+// Variables
+//
+$theme-colors: (
+    // primary: #25378b,
+    primary: #563d7c,
+    secondary: #6c757d,
+    success: #23af47,
+    info: rgb(116, 63, 173),
+    warning: #fbbc06,
+    danger: #dc3545,
+    // danger: #e94437,
+    light: #d8dffb,
+    dark: #1c2c42
+);
+
+// Import Bootstrap variables for use within theme
+@import 'bootstrap/scss/functions.scss';
+@import 'bootstrap/scss/variables.scss';
+
+// Import spacing variables
+@import './variables/spacing.scss';
+
+// Import navigation variables
+@import './variables/navigation.scss';
+
+// Environments colors
+@each $color, $value in $theme-colors {
+    .environment-#{$color} {
+        background-color: lighten($value, 35%);
+    }
+}
