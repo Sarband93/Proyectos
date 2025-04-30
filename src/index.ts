@@ -1,54 +1,64 @@
-import express, { NextFunction, Request, Response } from 'express'
-import cors from 'cors'
-import dotenv from 'dotenv'
-import { connectDB } from './database'
-import routing from './routes/menor_route'
+import express, { NextFunction, Request, Response } from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import { connectDB } from './database';
+import HttpError from './server/errors/HttpError';
+import { desactivarSancionesCaducadas } from './utils/desactivarSancionesCaducadas';
+import { iniciarCronSanciones } from './utils/cron';
 
-dotenv.config()
+// Rutas personalizadas
+import routingMenor from './routes/menor_route';
+import routingGrupo from './routes/grupo_route';
+import routingHabitacion from './routes/habitacion_route';
+import routingEducador from './routes/educador_route';
+import routingSancion from './routes/sancion_route';
+import routingAuth from './routes/auth_route';
 
-const app = express()
-const port = process.env.PORT || 3000
+dotenv.config();
 
-// Middlewares
-app.use(cors())
-app.use(express.json())
+const app = express();
+const port = process.env.PORT || 3000;
 
-routing(app)
+// Middlewares globales
+app.use(cors());
+app.use(express.json());
+
+// Rutas de la API
+routingMenor(app);
+routingGrupo(app);
+routingHabitacion(app);
+routingEducador(app);
+routingSancion(app);
+routingAuth(app);
 
 // Ruta de prueba
-app.get('/', (req, res) => {
-    res.send('✅ API  de Menores funcionando')
-})
+app.get('/', (_req, res) => {
+    res.send('✅ API del Centro de Menores funcionando');
+});
 
-// Conectar a la base de datos
-connectDB()
-
-// Levantar el servidor
-app.listen(port, () => {
-    console.log(`🚀 Servidor escuchando en http://localhost:${port}`)
-})
-
+// Middleware de errores personalizado
 function errorHandler(
     err: Error,
-    req: Request,
+    _req: Request,
     res: Response,
-    next: NextFunction
+    _next: NextFunction
 ) {
-    res.status((err as any).statusCode) || 500
-    res.json({ error: 1, message: err.message })
+    const statusCode = (err as HttpError).statusCode || 500;
+    res.status(statusCode).json({
+        error: 1,
+        message: err.message || 'Error del servidor',
+    });
 }
 
-// function errorHandler(
-//   err: Error & { status?: number },
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ): void {
-//   const statusCode = err.status ?? 500 // ⬅ si no hay status, usamos 500
-//   res.status(statusCode).json({
-//     error: 1,
-//     message: err.message || 'Error interno del servidor'
-//   })
-// }
+app.use(errorHandler);
 
-app.use(errorHandler)
+// Conexión a la base de datos
+connectDB().then(() => {
+    desactivarSancionesCaducadas();
+    iniciarCronSanciones();
+});
+
+// Arrancar servidor
+app.listen(port, () => {
+    console.log(`Servidor escuchando en http://localhost:${port}`);
+});

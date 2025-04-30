@@ -4,167 +4,135 @@ import { Types } from 'mongoose';
 // Errors Imports
 import BadRequestError from '../server/errors/BadRequestError';
 import NotFoundError from '../server/errors/NotFoundError';
+import { error } from 'console';
 
-async function getMenor(req: Request, res: Response, next: NextFunction) {
-    try {
-        throw new Error('error de prueba');
-        res.status(200).json({
-            message: 'Endpoint funcionando correctamente',
-        });
-    } catch (error) {
-        next(error);
-        console.log(error);
-    }
-}
-
-async function postMenor(req: Request, res: Response, next: NextFunction) {
-    {
-        try {
-            const { nombre, apellido, edad, grupo } = req.body;
-
-            const menor = new Menor({ nombre, apellido, edad, grupo });
-            const menorGuardado = await menor.save();
-
-            res.status(200).json({
-                message: 'El chaval ha sido guardado correctamente',
-                menor: menorGuardado,
-            });
-        } catch (error) {
-            console.log(error);
-            next(error);
-            // res.status(500).json({
-            //     mensaje: 'Error al guardar el chaval'
-            // })
-        }
-    }
-}
-
-async function getListaMenores(
+// Obtener todos los menores
+export const getMenores = async (
     req: Request,
     res: Response,
     next: NextFunction
-) {
+) => {
     try {
         const menores = await Menor.find();
-
-        res.json({
-            message: 'Lista de menores correcta',
-            menores,
-        });
-    } catch (error) {
-        console.log(error);
-        next(error);
-    }
-}
-
-export async function buscarMenorPorGrupo(
-    req: Request,
-    res: Response,
-    next: NextFunction
-) {
-    try {
-        const { nombreGrupo } = req.params;
-
-        const menores = await Menor.find({ grupo: nombreGrupo });
-
-        res.status(200).json({
-            message: `Menores del grupo ${nombreGrupo}`,
-            menores,
-        });
+        res.json(menores);
     } catch (error) {
         next(error);
     }
-}
-
-export async function buscarMenorPorApellido(
-    req: Request,
-    res: Response,
-    next: NextFunction
-) {
-    try {
-        const { apellido } = req.params;
-
-        const menores = await Menor.find({ apellido });
-
-        res.status(200).json({
-            message: `Menores con apellido ${apellido}`,
-            menores,
-        });
-    } catch (error) {
-        next(error);
-    }
-}
-
-export async function modificarMenor(
-    req: Request,
-    res: Response,
-    next: NextFunction
-): Promise<void> {
-    try {
-        const { id } = req.params;
-        const { nombre, apellido, edad, grupo } = req.body;
-
-        // Comprueba si el ID es valido
-        if (!Types.ObjectId.isValid(id)) {
-            throw new BadRequestError('ID no válido');
-        }
-
-        // Busca y actualiza el menor
-        const menorActualizado = await Menor.findByIdAndUpdate(
-            id,
-            { nombre, apellido, edad, grupo },
-            { new: true } // Devuelve el objeto actualizado
-        );
-
-        if (!menorActualizado) {
-            throw new NotFoundError('Menor no encontrado');
-        }
-
-        res.status(200).json({
-            message: 'Menor actualizado correctamente',
-            menor: menorActualizado,
-        });
-    } catch (error) {
-        console.error(error);
-        next(error);
-    }
-}
-
-// Insertar varios menores a la bd
-export async function insertarVariosMenores(
-    req: Request,
-    res: Response,
-    next: NextFunction
-): Promise<void> {
-    try {
-        const listaMenores = req.body;
-
-        // if (!Array.isArray(listaMenores)) {
-        //     res.status(400).json({ message: 'Debes insertar varios menores'})
-        //     return
-        // }
-        if (!Array.isArray(listaMenores)) {
-            throw new BadRequestError('Debes insertar varios menores');
-        }
-
-        const resultado = await Menor.insertMany(listaMenores);
-
-        // res.status(200).json({
-        res.json({
-            message: 'menores insertados correctamente',
-            menores: resultado,
-        });
-    } catch (error) {
-        next(error);
-    }
-}
-
-export default {
-    getMenor,
-    postMenor,
-    getListaMenores,
-    buscarMenorPorGrupo,
-    buscarMenorPorApellido,
-    modificarMenor,
-    insertarVariosMenores,
 };
+
+// Obtener un menor por ID
+export const getMenorById = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const menor = await Menor.findById(req.params.id);
+        if (!menor) throw new NotFoundError('Menor no encontrado');
+        res.json(menor);
+    } catch (error) {
+        next(error);
+    }
+};
+
+// Crear un nuevo menor
+export const createMenor = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const nuevoMenor = new Menor(req.body);
+        const guardado = await nuevoMenor.save();
+        res.status(201).json(guardado);
+    } catch (error) {
+        next(new BadRequestError('Error al crear el menor'));
+    }
+};
+
+// Actualizar menor
+export const updateMenor = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const menorActualizado = await Menor.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            { new: true }
+        );
+        if (!menorActualizado) throw new NotFoundError('Menor no encontrado');
+        res.json(menorActualizado);
+    } catch (error) {
+        next(error);
+    }
+};
+
+// Eliminar menor
+export const deleteMenor = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const menorEliminado = await Menor.findByIdAndDelete(req.params.id);
+        if (!menorEliminado) throw new NotFoundError('Menor no encontrado');
+        res.json({ message: 'Menor eliminado correctamente ' });
+    } catch (error) {
+        next(error);
+    }
+};
+
+// Buscar menor por Grupo, apellidos o tutelado
+export const buscarMenores = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const { grupo, tutelado, apellidos } = req.query;
+
+        const filtro: Record<string, unknown> = {}; //
+
+        if (grupo) filtro.grupoId = grupo;
+        if (apellidos)
+            filtro.apellidos = {
+                $regrex: new RegExp(apellidos as string, 'i'),
+            };
+        if (tutelado) filtro.tutelado = tutelado === 'true';
+
+        const resultados = await Menor.find(filtro);
+        res.json(resultados);
+    } catch (error) {
+        next(error);
+    }
+};
+
+// // Insertar varios menores a la bd
+// export async function insertarVariosMenores(
+//     req: Request,
+//     res: Response,
+//     next: NextFunction
+// ): Promise<void> {
+//     try {
+//         const listaMenores = req.body;
+
+//         // if (!Array.isArray(listaMenores)) {
+//         //     res.status(400).json({ message: 'Debes insertar varios menores'})
+//         //     return
+//         // }
+//         if (!Array.isArray(listaMenores)) {
+//             throw new BadRequestError('Debes insertar varios menores');
+//         }
+
+//         const resultado = await Menor.insertMany(listaMenores);
+
+//         // res.status(200).json({
+//         res.json({
+//             message: 'menores insertados correctamente',
+//             menores: resultado,
+//         });
+//     } catch (error) {
+//         next(error);
+//     }
