@@ -33,7 +33,7 @@ routingAuth(app);
 
 // Ruta de prueba
 app.get('/', (_req, res) => {
-    res.send('✅ API del Centro de Menores funcionando');
+    res.send('API del Centro de Menores funcionando');
 });
 
 // Middleware de errores personalizado

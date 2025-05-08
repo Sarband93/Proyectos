@@ -13,7 +13,7 @@ export const getMenores = async (
     next: NextFunction
 ) => {
     try {
-        const menores = await Menor.find();
+        const menores = await Menor.find().populate('grupoId', 'nombre');
         res.json(menores);
     } catch (error) {
         next(error);

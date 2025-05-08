@@ -66,8 +66,31 @@ const routes: RouteRecordRaw[] = [
                 path: 'add',
                 name: 'user-add',
                 component: () => import('./views/user/UserAddEdit.vue')
-            }
+            },
             //
+            {
+                path: 'menores',
+                name: 'menores',
+                component: () => import('./views/menores/Menores.vue')
+            },
+            //
+            {
+                path: 'menores/add',
+                name: 'menor-add',
+                component: () => import('./views/menores/MenorAddEdit.vue')
+            },
+            //
+            {
+                path: 'menores/edit/:id',
+                name: 'menor-edit',
+                component: () => import('./views/menores/MenorAddEdit.vue')
+            },
+            //
+            {
+                path: 'menores/detail',
+                name: 'menor-detail',
+                component: () => import('./views/menores/MenorDetail.vue')
+            }
         ]
     },
     {

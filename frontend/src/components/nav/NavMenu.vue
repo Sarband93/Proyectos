@@ -17,7 +17,10 @@ nav#sidenavAccordion.sidemenu.accordion
             .nav-link-icon
                 i.fas.fa-users
             .nav-link-text Users
-
+        RouterLink.nav-link(:to='{ name: "menores" }', title='Menores')
+            .nav-link-icon
+                i.fas.fa-child
+            .nav-link-text Menores
         //- a.nav-link.collapsed(href='#', @click='collapsed[0] = !collapsed[0]', title='Configuration', v-if='isUser')
             .nav-link-icon
                 i.fas.fa-cog

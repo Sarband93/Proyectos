@@ -1,18 +1,18 @@
 //
 // Variables
 //
-$theme-colors: (
-    // primary: #25378b,
-    primary: #563d7c,
-    secondary: #6c757d,
-    success: #23af47,
-    info: rgb(116, 63, 173),
-    warning: #fbbc06,
-    danger: #dc3545,
-    // danger: #e94437,
-    light: #d8dffb,
-    dark: #1c2c42
-);
+// $theme-colors: (
+//     // primary: #25378b,
+//     primary: #563d7c,
+//     secondary: #6c757d,
+//     success: #23af47,
+//     info: rgb(116, 63, 173),
+//     warning: #fbbc06,
+//     danger: #dc3545,
+//     // danger: #e94437,
+//     light: #d8dffb,
+//     dark: #1c2c42
+// );
 
 // Import Bootstrap variables for use within theme
 @import 'bootstrap/scss/functions.scss';

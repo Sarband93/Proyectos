@@ -1,7 +1,7 @@
 // import Paths from '../../../backend/src/routes/PathGenerator';
 import PathsUser from './PathsUser';
 
-export const domain = import.meta.env.PROD ? '' : 'http://localhost:3500';
+export const domain = import.meta.env.PROD ? '' : 'http://localhost:3000';
 
 export function resourceURL(originalURL: string) {
     if (!originalURL.startsWith('/')) originalURL = '/' + originalURL;

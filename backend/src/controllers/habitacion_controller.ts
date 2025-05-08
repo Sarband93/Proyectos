@@ -40,19 +40,33 @@ export const updateHabitacion = async (
     req: Request,
     res: Response,
     next: NextFunction
-) => {
+  ) => {
     try {
-        const actualizada = await Habitacion.findByIdAndUpdate(
-            req.params.id,
-            req.body,
-            {
-                new: true,
-            }
-        ).populate('menores');
-
-        if (!actualizada) throw new NotFoundError('Habitación no encontrada');
-        res.json(actualizada);
+      const data = req.body;
+  
+      if (!Array.isArray(data.menores)) {
+        throw new BadRequestError('Debes enviar un array de IDs en el campo "menores".');
+      }
+  
+      const estado = data.menores.length > 0 ? 'ocupada' : 'vacía y limpia';
+  
+      const actualizada = await Habitacion.findByIdAndUpdate(
+        req.params.id,
+        {
+          ...data,
+          estado,
+        },
+        { new: true }
+      ).populate({
+        path: 'menores',
+        select: 'nombre apellidos',
+      });
+  
+      if (!actualizada) throw new NotFoundError('Habitación no encontrada');
+  
+      res.json(actualizada);
     } catch (error) {
-        next(new BadRequestError('Error al actualizar la habitación'));
+      next(error);
     }
-};
+  };
+  

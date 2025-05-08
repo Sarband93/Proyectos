@@ -1,11 +1,13 @@
 // Usamos Schema de mongoose y el modelo
 import { Schema, model, Types } from 'mongoose';
 
+const REGEX_DATE = /([0-9]{4}[-](0[1-9]|1[0-2])[-]([0-2]{1}[0-9]{1}|3[0-1]{1})|([0-2]{1}[0-9]{1}|3[0-1]{1})[-](0[1-9]|1[0-2])[-][0-9]{4})/;
+
 // Los datos que va a tener el menor
 export interface IMenor {
     nombre: string;
     apellidos: string;
-    fechaNacimiento: Date;
+    fechaNacimiento: string;
     tutelado: boolean;
 
     protocolosSeguridad: {
@@ -43,7 +45,7 @@ export interface IMenor {
 const menorSchema = new Schema<IMenor>({
     nombre: { type: String, required: true },
     apellidos: { type: String, required: true },
-    fechaNacimiento: { type: Date, required: true },
+    fechaNacimiento: { type: String, required: true, match: REGEX_DATE },
     tutelado: { type: Boolean, default: false },
 
     protocolosSeguridad: {
