@@ -6,6 +6,7 @@ import {
     updateMenor,
     deleteMenor,
     buscarMenores,
+    liberarHabitacionMenor,
 } from '../controllers/menor_controller';
 
 function routingMenor(app: Express): void {
@@ -21,6 +22,9 @@ function routingMenor(app: Express): void {
     app.delete('/api/menores/:id', deleteMenor);
     //GET MENORES POR FILTRO
     app.get('/api/menores/buscar', buscarMenores);
+    //PUT LIBERAR HABITACION
+    app.put('/api/menores/liberar-habitacion/:id', liberarHabitacionMenor);
+
 }
 
 export default routingMenor;

@@ -87,10 +87,77 @@ const routes: RouteRecordRaw[] = [
             },
             //
             {
-                path: 'menores/detail',
+                path: 'menores/detail/:id',
                 name: 'menor-detail',
                 component: () => import('./views/menores/MenorDetail.vue')
+            },
+            //
+            {
+                path: 'educadores',
+                name: 'educadores',
+                component: () => import('./views/educadores/Educadores.vue')
+            },
+            //
+            {
+                path: 'educadores/detail/:id',
+                name: 'educador-detail',
+                component: () => import('./views/educadores/EducadorDetail.vue')
+            },
+            //
+            {
+                path: 'educadores/add',
+                name: 'educador-add',
+                component: () => import('./views/educadores/EducadorAddEdit.vue')
+            },
+            //
+            {
+                path: 'educador/edit/:id',
+                name: 'educador-edit',
+                component: () => import('./views/educadores/EducadorAddEdit.vue')
+            },
+            //
+            {
+                path: 'grupos',
+                name: 'grupos',
+                component: () => import('./views/grupos/Grupos.vue')
+            },
+            //
+            {
+                path: 'grupos/add',
+                name: 'grupo-add',
+                component: () => import('./views/grupos/GrupoAddEdit.vue')
+            },
+            //
+            {
+                path: 'grupos/edit/:id',
+                name: 'grupo-edit',
+                component: () => import('./views/grupos/GrupoAddEdit.vue')
+            },
+            //
+            {
+                path: 'grupos/detail/:id',
+                name: 'grupo-detail',
+                component: () => import('./views/grupos/GrupoDetail.vue')
+            },
+            //
+            {
+                path: 'sanciones',
+                name: 'sanciones',
+                component: () => import('./views/sanciones/Sanciones.vue')
+            },
+            //
+            {
+                path: 'sanciones/add',
+                name: 'sancion-add',
+                component: () => import('./views/sanciones/SancionAddEdit.vue')
+            },
+            //
+            {
+                path: 'sanciones/edit/:id',
+                name: 'sancion-edit',
+                component: () => import('./views/sanciones/SancionAddEdit.vue')
             }
+            //
         ]
     },
     {

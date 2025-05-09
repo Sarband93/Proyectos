@@ -43,6 +43,7 @@ interface Menor {
     nombre: string;
     apellidos: string;
     fechaNacimiento: string;
+    protocolo: string;
     grupoId?: {
         nombre: string;
     };

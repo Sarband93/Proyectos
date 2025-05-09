@@ -21,6 +21,18 @@ nav#sidenavAccordion.sidemenu.accordion
             .nav-link-icon
                 i.fas.fa-child
             .nav-link-text Menores
+        RouterLink.nav-link(:to='{ name: "educadores" }', title='Educadores')
+            .nav-link-icon
+                i.fas.fa-chalkboard-teacher
+            .nav-link-text Educadores
+        RouterLink.nav-link(:to='{ name: "grupos" }', title='Grupos')
+            .nav-link-icon
+                i.fa.fa-university
+            .nav-link-text Grupos
+        RouterLink.nav-link(:to='{ name: "sanciones" }', title='Sanciones')
+            .nav-link-icon
+                i.fa.fa-bomb
+            .nav-link-text Sanciones
         //- a.nav-link.collapsed(href='#', @click='collapsed[0] = !collapsed[0]', title='Configuration', v-if='isUser')
             .nav-link-icon
                 i.fas.fa-cog

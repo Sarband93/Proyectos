@@ -22,7 +22,7 @@ export interface IMenor {
         intolerancias: string[];
     };
 
-    protocolosEspeciales: string[]; // Ej: Riesgo de fuga, supervision de libros
+    protocolosEspeciales: string[]; 
 
     medicaciones: string[];
     bajaDeportiva: boolean;
@@ -37,7 +37,7 @@ export interface IMenor {
         enDomicilio: boolean;
     };
 
-    habitacionId: Types.ObjectId;
+    habitacionId?: Types.ObjectId;
     grupoId: Types.ObjectId;
 }
 
@@ -73,9 +73,11 @@ const menorSchema = new Schema<IMenor>({
     estado: {
         enSeparacionGrupo: { type: Boolean, default: false },
         enDomicilio: { type: Boolean, default: false },
+        fechaFinSeparacionCompleta: { type: Date }, // Para procesar la fecha fin de sancion
     },
 
-    habitacionId: { type: Schema.Types.ObjectId, ref: 'Habitacion' },
+    habitacionId: { type: Schema.Types.ObjectId, ref: 'Habitacion', required: false },
+
     grupoId: { type: Schema.Types.ObjectId, ref: 'Grupo' },
 });
 

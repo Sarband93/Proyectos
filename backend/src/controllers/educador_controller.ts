@@ -13,7 +13,7 @@ export const getEducadores = async (
     try {
         const educadores = await Educador.find().populate({
             path: 'grupoAsignado',
-            select: 'nombre apellidos',
+            select: 'nombre',
         });
 
         res.json(educadores);

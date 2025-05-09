@@ -24,6 +24,8 @@ export const getGrupos = async (
 };
 
 // Obtener un grupo por ID
+import { Menor } from '../models/menor_model';
+
 export const getGrupoById = async (
     req: Request,
     res: Response,
@@ -31,19 +33,35 @@ export const getGrupoById = async (
 ) => {
     try {
         const grupo = await Grupo.findById(req.params.id)
-            .populate('habitaciones', 'identificador')
-            .populate('menores', 'nombre apellidos')
-            .populate('educadorManana', 'nombre apellidos')
-            .populate('educadorTarde', 'nombre apellidos')
-            .populate('educadorFinde', 'nombre apellidos');
+            .populate({
+                path: 'habitaciones',
+                select: 'identificador menores',
+                populate: {
+                    path: 'menores',
+                    select: 'nombre apellidos'
+                }
+            })
+            .populate('educadorManana', 'nombre apellidos _id')
+            .populate('educadorTarde', 'nombre apellidos _id')
+            .populate('educadorFinde', 'nombre apellidos _id')
+
 
         if (!grupo) throw new NotFoundError('Grupo no encontrado');
 
-        res.json(grupo);
+        const menores = await Menor.find({ grupoId: grupo._id }, 'nombre apellidos _id');
+
+        const grupoConMenores = {
+            ...grupo.toObject(),
+            menores,
+        };
+
+        res.json(grupoConMenores);
     } catch (error) {
         next(error);
     }
 };
+
+
 
 // Actualizar un grupo
 export const updateGrupo = async (
