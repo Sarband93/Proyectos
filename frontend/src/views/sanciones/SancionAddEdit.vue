@@ -28,7 +28,7 @@ NavView.view-sancion-add-edit(icon='fas fa-gavel', :title='isAdd ? "Nueva sanci√
 
             .mb-3
                 label.form-label Descripci√≥n
-                textarea.form-control(v-model='sancion.descripcion', required)
+                textarea.form-control(v-model='sancion.descripcion')
 
             .mb-3
                 label.form-label Observaciones

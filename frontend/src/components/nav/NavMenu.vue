@@ -33,6 +33,10 @@ nav#sidenavAccordion.sidemenu.accordion
             .nav-link-icon
                 i.fa.fa-bomb
             .nav-link-text Sanciones
+        RouterLink.nav-link(:to='{ name: "cuadrante" }', title='Cuadrante')
+            .nav-link-icon
+                i.fa.fa-table
+            .nav-link-text Cuadrante
         //- a.nav-link.collapsed(href='#', @click='collapsed[0] = !collapsed[0]', title='Configuration', v-if='isUser')
             .nav-link-icon
                 i.fas.fa-cog

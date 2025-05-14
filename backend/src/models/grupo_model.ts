@@ -4,9 +4,9 @@ export interface IGrupo {
     nombre: string;
     habitaciones: Types.ObjectId[];
     menores: Types.ObjectId[];
-    educadorManana: Types.ObjectId;
-    educadorTarde: Types.ObjectId;
-    educadorFinde: Types.ObjectId;
+    educadorManana: Types.ObjectId | null;
+    educadorTarde: Types.ObjectId | null;
+    educadorFinde: Types.ObjectId | null;
 }
 
 const grupoSchema = new Schema<IGrupo>({
@@ -32,17 +32,17 @@ const grupoSchema = new Schema<IGrupo>({
     educadorManana: {
         type: Schema.Types.ObjectId,
         ref: 'Educador',
-        required: true,
+        default: null,
     },
     educadorTarde: {
         type: Schema.Types.ObjectId,
         ref: 'Educador',
-        required: true,
+        default: null,
     },
     educadorFinde: {
         type: Schema.Types.ObjectId,
         ref: 'Educador',
-        required: true,
+        default: null,
     },
 });
 

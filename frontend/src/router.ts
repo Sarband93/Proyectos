@@ -156,8 +156,13 @@ const routes: RouteRecordRaw[] = [
                 path: 'sanciones/edit/:id',
                 name: 'sancion-edit',
                 component: () => import('./views/sanciones/SancionAddEdit.vue')
-            }
+            },
             //
+            {
+                path: 'cuadrante',
+                name: 'cuadrante',
+                component: () => import('./views/cuadrante/Cuadrante.vue')
+            }
         ]
     },
     {

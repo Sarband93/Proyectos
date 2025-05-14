@@ -18,7 +18,7 @@ NavView.view-menores(icon='fa fa-users', title='Lista de menores')
                     td {{ menor.nombre }}
                     td {{ menor.apellidos }}
                     td {{ calcularEdad(menor.fechaNacimiento) }} años
-                    td {{ menor.grupoId?.nombre || 'Sin grupo' }}
+                    td {{ menor.habitacionId?.grupoId?.nombre || 'Sin grupo' }}
                     td
                         button.btn.btn-sm.btn-primary(@click='verDetalles(menor)') Ver
                         button.btn.btn-sm.btn-warning.ms-2(@click='editarMenor(menor._id)') Editar
@@ -46,6 +46,11 @@ interface Menor {
     protocolo: string;
     grupoId?: {
         nombre: string;
+    };
+    habitacionId?: {
+        grupoId?: {
+            nombre: string;
+        };
     };
 }
 

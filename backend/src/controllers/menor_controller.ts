@@ -8,18 +8,21 @@ import NotFoundError from '../server/errors/NotFoundError';
 import { error } from 'console';
 
 // Obtener todos los menores
-export const getMenores = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-) => {
-    try {
-        const menores = await Menor.find().populate('grupoId', 'nombre');
-        res.json(menores);
-    } catch (error) {
-        next(error);
-    }
+// controllers/menores.ts
+export const getMenores = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const menores = await Menor.find()
+      .populate({
+        path: 'habitacionId',
+        populate: { path: 'grupoId', select: 'nombre' }
+      });
+
+    res.json(menores);
+  } catch (error) {
+    next(error);
+  }
 };
+
 
 // Obtener un menor por ID
 export const getMenorById = async (

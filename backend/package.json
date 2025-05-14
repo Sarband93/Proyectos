@@ -5,6 +5,7 @@
     "scripts": {
         "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
         "ts": "tsc -w",
+        "datos": "ts-node src/utils/datos.ts",
         "test": "echo \"Error: no test specified\" && exit 1",
         "format:check": "prettier --check .",
         "format:write": "prettier --write .",

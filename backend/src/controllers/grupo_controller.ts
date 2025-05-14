@@ -4,6 +4,7 @@ import BadRequestError from '../server/errors/BadRequestError';
 import NotFoundError from '../server/errors/NotFoundError';
 
 // Obtener todos los grupos
+// Obtener todos los grupos con habitaciones y menores
 export const getGrupos = async (
     req: Request,
     res: Response,
@@ -11,17 +12,28 @@ export const getGrupos = async (
 ) => {
     try {
         const grupos = await Grupo.find()
-            .populate('habitaciones', 'identificador') // Solo traemos el identificador de la habitación
-            .populate('menores', 'nombre apellidos') // Solo traemos nombre y apellidos de los menores
+            .populate({
+                path: 'habitaciones',
+                populate: {
+                    path: 'menores',
+                    select: 'nombre apellidos tutelado protocolosSeguridad salud medicaciones estado apoyoEducativo',
+                    populate: {
+                        path: 'sancionesActivas',
+                        select: 'tipo fechaFin activa',
+                    }
+                }
+            })
             .populate('educadorManana', 'nombre apellidos')
             .populate('educadorTarde', 'nombre apellidos')
             .populate('educadorFinde', 'nombre apellidos');
+            
 
         res.json(grupos);
     } catch (error) {
         next(error);
     }
 };
+
 
 // Obtener un grupo por ID
 import { Menor } from '../models/menor_model';

@@ -30,7 +30,6 @@ NavView.view-menor-add-edit(icon='fas fa-user-plus', :title='isAdd ? "Añadir me
                         :value='habitacion._id',
                         :disabled='!habitacion.disponible') 
                         | Habitación {{ habitacion.identificador }} - ({{ habitacion.tipo }}, {{ habitacion.menores.length }} ocupantes)
-                // BOTÓN PARA LIBERAR LA HABITACION
                 .mt-2(v-if='menor.habitacionId')
                     button.btn.btn-outline-danger.btn-sm(@click.prevent='liberarHabitacion')
                         i.fas.fa-door-open.me-1
@@ -41,18 +40,37 @@ NavView.view-menor-add-edit(icon='fas fa-user-plus', :title='isAdd ? "Añadir me
                 select#protocolos.form-select(v-model='menor.protocolosEspeciales', multiple)
                     option(value='') -- Selecciona protocolos --
                     option(v-for='protocolo in protocolosDisponibles', key='protocolo', :value='protocolo') {{ protocolo }}
-
-                // Chips visuales
                 .mt-2
                     span.badge.bg-primary.text-white.me-2.mb-2(v-for='(p, index) in menor.protocolosEspeciales', :key='index')
                         | {{ p }}
                         button.btn-close.btn-close-white.btn-sm.ms-2(@click='quitarProtocolo(index)')
 
-            // CHECKBOX DE TUTELADO
             .mb-3
                 .form-check
                     input#tutelado.form-check-input(type='checkbox', v-model='menor.tutelado')
                     label.form-check-label(for='tutelado') ¿Está tutelado?
+
+            .mb-3
+                label.form-label Protocolos de seguridad
+                .form-check
+                    input#ppa.form-check-input(type='checkbox', v-model='menor.protocolosSeguridad.PPA')
+                    label.form-check-label(for='ppa') PPA
+                .form-check
+                    input#oe.form-check-input(type='checkbox', v-model='menor.protocolosSeguridad.OE')
+                    label.form-check-label(for='oe') OE
+                .form-check
+                    input#oa.form-check-input(type='checkbox', v-model='menor.protocolosSeguridad.OA')
+                    label.form-check-label(for='oa') OA
+                .mt-2
+                    span.badge.bg-danger.text-white.me-2.mb-2(v-if='menor.protocolosSeguridad.PPA')
+                        | PPA
+                        button.btn-close.btn-close-white.btn-sm.ms-2(@click='menor.protocolosSeguridad.PPA = false')
+                    span.badge.bg-danger.text-white.me-2.mb-2(v-if='menor.protocolosSeguridad.OE')
+                        | OE
+                        button.btn-close.btn-close-white.btn-sm.ms-2(@click='menor.protocolosSeguridad.OE = false')
+                    span.badge.bg-danger.text-white.me-2.mb-2(v-if='menor.protocolosSeguridad.OA')
+                        | OA
+                        button.btn-close.btn-close-white.btn-sm.ms-2(@click='menor.protocolosSeguridad.OA = false')
 
             .mb-3
                 label.form-label Dietas
@@ -60,7 +78,7 @@ NavView.view-menor-add-edit(icon='fas fa-user-plus', :title='isAdd ? "Añadir me
                 button.btn.btn-sm.btn-outline-primary.mt-1(@click.prevent='añadirDieta') Añadir
                 ul.mt-2
                     li(v-for='(dieta, i) in menor.salud.dietas', :key='i')
-                        | {{ dieta }}
+                        span.underline-rosa {{ dieta }}
                         button.btn-close.ms-2(@click='quitarDieta(i)')
 
             .mb-3
@@ -69,7 +87,7 @@ NavView.view-menor-add-edit(icon='fas fa-user-plus', :title='isAdd ? "Añadir me
                 button.btn.btn-sm.btn-outline-danger.mt-1(@click.prevent='añadirAlergia') Añadir
                 ul.mt-2
                     li(v-for='(alergia, i) in menor.salud.alergias', :key='i')
-                        | {{ alergia }}
+                        span.underline-rojo {{ alergia }}
                         button.btn-close.ms-2(@click='quitarAlergia(i)')
 
             .mb-3
@@ -78,7 +96,7 @@ NavView.view-menor-add-edit(icon='fas fa-user-plus', :title='isAdd ? "Añadir me
                 button.btn.btn-sm.btn-outline-warning.mt-1(@click.prevent='añadirIntolerancia') Añadir
                 ul.mt-2
                     li(v-for='(intolerancia, i) in menor.salud.intolerancias', :key='i')
-                        | {{ intolerancia }}
+                        span.underline-naranja {{ intolerancia }}
                         button.btn-close.ms-2(@click='quitarIntolerancia(i)')
 
             .mb-3
@@ -87,17 +105,15 @@ NavView.view-menor-add-edit(icon='fas fa-user-plus', :title='isAdd ? "Añadir me
                 button.btn.btn-sm.btn-outline-secondary.mt-1(@click.prevent='añadirMedicacion') Añadir
                 ul.mt-2
                     li(v-for='(medicacion, i) in menor.medicaciones', :key='i')
-                        | {{ medicacion }}
+                        span.underline-blue {{ medicacion }}
                         button.btn-close.ms-2(@click='quitarMedicacion(i)')
 
             .mb-3
                 .form-check
                     input#bajaDeportiva.form-check-input(type='checkbox', v-model='menor.bajaDeportiva')
                     label.form-check-label(for='bajaDeportiva') ¿Está de baja deportiva?
-
-                // SI ESTÁ DE BAJA
                 .mt-2(v-if='menor.bajaDeportiva')
-                    label.form-label(for='detalleBaja', placeholder='Detalle de la baja deportiva')
+                    label.form-label(for='detalleBaja') Detalle de la baja deportiva
                     input#detalleBaja.form-control(
                         type='text',
                         v-model='menor.detalleBajaDeportiva',
@@ -108,7 +124,6 @@ NavView.view-menor-add-edit(icon='fas fa-user-plus', :title='isAdd ? "Añadir me
                 .form-check
                     input#ei.form-check-input(type='checkbox', v-model='menor.apoyoEducativo.EI')
                     label.form-check-label(for='ei') EI (Estudio Intensivo)
-
                 .form-check
                     input#ap.form-check-input(type='checkbox', v-model='menor.apoyoEducativo.AP')
                     label.form-check-label(for='ap') AP (Apoyo)
@@ -118,18 +133,14 @@ NavView.view-menor-add-edit(icon='fas fa-user-plus', :title='isAdd ? "Añadir me
                 .form-check
                     input#separacionGrupo.form-check-input(type='checkbox', v-model='menor.estado.enSeparacionGrupo')
                     label.form-check-label(for='separacionGrupo') SG
-
-                // SI ESTÁ EN SEPARA
                 .mt-2(v-if='menor.estado.enSeparacionGrupo')
                     label.form-label Fecha de finalización de la separación de grupo
-                    input.form-control(type='date', v-model='menor.estado.fechaFinSeparacionGrupo', required)
-
+                    input.form-control(type='date', v-model='menor.estado.fechaFinSeparacionGrupo')
                     label.form-label.mt-2 Hora de finalización
-                    select.form-select(v-model='menor.estado.horaFinSeparacionGrupo', required)
+                    select.form-select(v-model='menor.estado.horaFinSeparacionGrupo')
                         option(value='') -- Selecciona la hora --
                         option(value='16:00') 16:00
                         option(value='00:00') 00:00
-
                 .form-check
                     input#enDomicilio.form-check-input(type='checkbox', v-model='menor.estado.enDomicilio')
                     label.form-check-label(for='enDomicilio') Domicilio
@@ -170,6 +181,11 @@ const menor = ref({
     fechaNacimiento: '',
     grupoId: '',
     protocolosEspeciales: [] as string[],
+    protocolosSeguridad: {
+        PPA: false,
+        OE: false,
+        OA: false
+    },
     tutelado: false,
     salud: {
         dietas: [] as string[],
@@ -193,15 +209,7 @@ const menor = ref({
     habitacionId: ''
 });
 
-const protocolosDisponibles = [
-    'PPA',
-    'OE',
-    'OA',
-    'Riesgo de fuga',
-    'Protocolo Educador',
-    'Protocolo Lavandería',
-    'Llamadas Supervisadas'
-];
+const protocolosDisponibles = ['Riesgo de fuga', 'Protocolo Educador', 'Protocolo Lavandería', 'Llamadas Supervisadas'];
 
 // DIETAS
 const nuevaDieta = ref('');
@@ -269,20 +277,21 @@ const isAdd = computed(() => !route.params.id);
 const obtenerMenor = async () => {
     try {
         const res = await axios.get(`http://localhost:3000/api/menores/${route.params.id}`);
-        menor.value = res.data;
+        const data = res.data;
 
-        // traer datos de fecha y hora si tiene sancion
-        const fechaCompleta = menor.value.estado?.fechaFinSeparacionCompleta;
+        // Normalizar grupo y habitación
+        data.grupoId = data.grupoId?._id || '';
+        data.habitacionId = data.habitacionId?._id || '';
 
+        // Convertir fechas si tiene sanción
+        const fechaCompleta = data.estado?.fechaFinSeparacionCompleta;
         if (fechaCompleta) {
             const completa = new Date(fechaCompleta);
-
-            //Asignar fecha en formato 'YYYY-MM-DD'
-            menor.value.estado.fechaFinSeparacionGrupo = completa.toISOString().split('T')[0];
-
-            // Asignar hora en formato 'HH:MM'
-            menor.value.estado.horaFinSeparacionGrupo = completa.toTimeString().slice(0, 5);
+            data.estado.fechaFinSeparacionGrupo = completa.toISOString().split('T')[0];
+            data.estado.horaFinSeparacionGrupo = completa.toTimeString().slice(0, 5);
         }
+
+        menor.value = data;
     } catch (error) {
         console.error('Error al cargar menor:', error);
     }
@@ -290,6 +299,8 @@ const obtenerMenor = async () => {
 
 const guardarMenor = async () => {
     try {
+        console.log('Contenido enviado al backend:', JSON.stringify(menor.value, null, 2));
+
         if (isAdd.value) {
             await axios.post('http://localhost:3000/api/menores', menor.value);
             alert('success', 'Menor añadido correctamente');
