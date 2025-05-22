@@ -44,18 +44,37 @@ export const getMenorById = async (
 
 // Crear un nuevo menor
 export const createMenor = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
+  req: Request,
+  res: Response,
+  next: NextFunction
 ) => {
-    try {
-        const nuevoMenor = new Menor(req.body);
-        const guardado = await nuevoMenor.save();
-        res.status(201).json(guardado);
-    } catch (error) {
-        next(new BadRequestError('Error al crear el menor'));
+  try {
+    const nuevoMenor = new Menor(req.body);
+    const guardado = await nuevoMenor.save();
+
+    // Añadir a la habitación
+    if (req.body.habitacionId) {
+      const habitacion = await Habitacion.findById(req.body.habitacionId);
+      if (habitacion) {
+        const yaAsignado = habitacion.menores.some(
+          (id) => id.toString() === guardado._id.toString()
+        );
+
+        if (!yaAsignado) {
+          habitacion.menores.push(guardado._id);
+        }
+
+        habitacion.estado = 'ocupada';
+        await habitacion.save();
+      }
     }
+
+    res.status(201).json(guardado);
+  } catch (error) {
+    next(new BadRequestError('Error al crear el menor'));
+  }
 };
+
 
 // Actualizar menor
 export const updateMenor = async (
@@ -64,7 +83,7 @@ export const updateMenor = async (
     next: NextFunction
 ) => {
     try {
-        // Procesar fecha de sanción
+        // Proceso fecha de sanción
         if (
             req.body.estado?.enSeparacionGrupo &&
             req.body.estado.fechaFinSeparacionGrupo &&
@@ -81,11 +100,11 @@ export const updateMenor = async (
 
         const habitacionId = req.body.habitacionId;
 
-        // Obtener menor antes de actualizar para saber su habitación anterior
+        // Obtengo el menor antes de actualizar para saber su habitación anterior
         const menorAntes = await Menor.findById(req.params.id);
         if (!menorAntes) throw new NotFoundError('Menor no encontrado');
 
-        // Verificar habitación nueva
+        // Verifico habitación nueva
         if (habitacionId) {
             const habitacionNueva = await Habitacion.findById(habitacionId);
             if (!habitacionNueva) {
@@ -95,12 +114,18 @@ export const updateMenor = async (
             const esDoble = habitacionNueva.tipo === 'doble';
             const numOcupantes = habitacionNueva.menores.length;
 
-            if (!esDoble && numOcupantes >= 1) {
-                throw new BadRequestError('La habitación individual ya está ocupada');
-            }
+            const menorYaEstaEnHabitacion = habitacionNueva.menores.some(
+                (id) => id.toString() === menorAntes._id.toString()
+            );
 
-            if (esDoble && numOcupantes >= 2) {
-                throw new BadRequestError('La habitación doble ya está completa');
+            if (!esDoble) {
+                if (numOcupantes >= 1 && !menorYaEstaEnHabitacion) {
+                    throw new BadRequestError('La habitación individual ya está ocupada');
+                }
+            } else {
+                if (numOcupantes >= 2 && !menorYaEstaEnHabitacion) {
+                    throw new BadRequestError('La habitación doble ya está completa');
+                }
             }
         }
 
@@ -112,7 +137,7 @@ export const updateMenor = async (
         );
         if (!menorActualizado) throw new NotFoundError('Menor no encontrado');
 
-        // Si tenía una habitación anterior y ha cambiado, limpiarla
+        // Si tenía una habitación anterior y ha cambiado la limpio
         const habitacionAnteriorId = menorAntes.habitacionId?.toString();
         if (habitacionAnteriorId && habitacionAnteriorId !== habitacionId) {
             const habitacionAnterior = await Habitacion.findById(habitacionAnteriorId);
@@ -121,7 +146,7 @@ export const updateMenor = async (
                     (id) => id.toString() !== menorAntes._id.toString()
                 );
 
-                // Si queda vacía, la marcamos como limpia
+                // Si queda vacía, la marco como limpia
                 habitacionAnterior.estado =
                     habitacionAnterior.menores.length === 0
                         ? 'vacía y limpia'
@@ -131,7 +156,7 @@ export const updateMenor = async (
             }
         }
 
-        // Añadir al menor a la nueva habitación (si no estaba)
+        // Añado al menor a la nueva habitación (si no estaba)
         if (habitacionId) {
             const habitacionNueva = await Habitacion.findById(habitacionId);
             if (habitacionNueva) {
@@ -165,16 +190,16 @@ export const deleteMenor = async (
         const menor = await Menor.findById(req.params.id);
         if (!menor) throw new NotFoundError('Menor no encontrado');
 
-        // Si tenía habitación, limpiarla
+        // Si tenía habitación, la limpio
         if (menor.habitacionId) {
             const habitacion = await Habitacion.findById(menor.habitacionId);
             if (habitacion) {
-                // Quitar al menor de la lista
+                // Quito al menor de la lista
                 habitacion.menores = habitacion.menores.filter(
                     (id) => id.toString() !== menor._id.toString()
                 );
 
-                // Si ya no hay menores, marcar como vacía
+                // Si ya no hay menores, marco como vacía
                 habitacion.estado =
                     habitacion.menores.length === 0 ? 'vacía y limpia' : 'ocupada';
 
@@ -249,31 +274,3 @@ export const liberarHabitacionMenor = async (
     }
 };
 
-
-// // Insertar varios menores a la bd
-// export async function insertarVariosMenores(
-//     req: Request,
-//     res: Response,
-//     next: NextFunction
-// ): Promise<void> {
-//     try {
-//         const listaMenores = req.body;
-
-//         // if (!Array.isArray(listaMenores)) {
-//         //     res.status(400).json({ message: 'Debes insertar varios menores'})
-//         //     return
-//         // }
-//         if (!Array.isArray(listaMenores)) {
-//             throw new BadRequestError('Debes insertar varios menores');
-//         }
-
-//         const resultado = await Menor.insertMany(listaMenores);
-
-//         // res.status(200).json({
-//         res.json({
-//             message: 'menores insertados correctamente',
-//             menores: resultado,
-//         });
-//     } catch (error) {
-//         next(error);
-//     }

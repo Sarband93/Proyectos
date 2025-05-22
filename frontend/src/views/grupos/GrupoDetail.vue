@@ -4,7 +4,7 @@ NavView.view-grupo-detail(icon='fas fa-users', title='Información del Grupo')
         button.btn.btn-outline-dark.me-2(@click='volver')
             i.fas.fa-arrow-left.me-2
             | Volver
-        button.btn.btn-warning(@click='editarGrupo')
+        button.btn.btn-warning(v-if='isCoordinador', @click='editarGrupo')
             i.fas.fa-pen.me-2
             | Editar
 
@@ -56,6 +56,7 @@ import { ref, onMounted } from 'vue';
 import { RouterLink, useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
 import NavView from '@/components/nav/NavView.vue';
+import { useUserInfo } from '@/helpers/useUserInfo';
 
 interface Persona {
     _id: string;
@@ -78,6 +79,8 @@ interface Grupo {
     educadorTarde: Persona;
     educadorFinde: Persona;
 }
+
+const { isCoordinador } = useUserInfo();
 
 const route = useRoute();
 const router = useRouter();

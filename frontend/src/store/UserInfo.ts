@@ -4,7 +4,7 @@ import Swal from 'sweetalert2';
 
 import paths from '@/api/paths';
 
-export const enumRole = ['admin', 'user', ''] as const;
+export const enumRole = ['coordinador', 'educador', ''] as const;
 export type UserRoles = (typeof enumRole)[number];
 
 type LoginResp = { email: string; role: UserRoles; name: string; surname: string; expires: number; token: string };
@@ -20,13 +20,12 @@ export const userInfo = defineStore('userInfo', {
             return state.info.token !== '';
         },
 
-        isAdmin(state) {
-            return state.info.role === 'admin';
+        isCoordinador(state) {
+            return state.info.role === 'coordinador';
         },
 
-        isUser(state) {
-            const roles: UserRoles[] = ['admin', 'user'];
-            return roles.includes(state.info.role);
+        isEducador(state) {
+            return state.info.role === 'educador';
         }
     },
     actions: {
@@ -48,15 +47,33 @@ export const userInfo = defineStore('userInfo', {
         async login(username: string, password: string): Promise<{ ok: boolean; msg?: string }> {
             try {
                 const resp = await axios.post(paths.auth.login(), { email: username, password });
-                this.setUserData(resp.data);
+                const { token, usuario } = resp.data;
+
+                this.setUserData({
+                    ...usuario,
+                    token
+                });
+
                 return { ok: true };
             } catch (error: any) {
                 if (error.isAxiosError) {
                     const axErr = error as AxiosError;
                     const data = axErr.response ? (axErr.response.data as any) : null;
+
+                    // ✅ Mostrar alerta si el usuario no está validado
+                    if (data?.message?.includes('validado')) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Cuenta no validada',
+                            text: 'Tu cuenta aún no ha sido validada por un coordinador. Intenta más tarde.'
+                        });
+                    }
+
                     if (data) return { ok: false, msg: data.message };
                     else return { ok: false, msg: `${axErr.code} - ${axErr.message}` };
-                } else return { ok: false, msg: error.message };
+                } else {
+                    return { ok: false, msg: error.message };
+                }
             }
         },
 

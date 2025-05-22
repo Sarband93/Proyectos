@@ -39,6 +39,7 @@ NavView.view-sanciones(icon='fas fa-gavel', title='Listado de sanciones')
                         span.badge(:class='s.activa ? "bg-success" : "bg-secondary"')
                             | {{ s.activa ? 'Activa' : 'Inactiva' }}
                     td
+                        button.btn.btn-sm.btn-outline-primary.me-2(@click='editarSancion(s._id)') Editar
                         button.btn.btn-sm.btn-outline-danger(v-if='s.activa', @click='desactivarSancion(s._id)') Desactivar
 </template>
 
@@ -98,6 +99,10 @@ const sancionesFiltradas = computed(() => {
 
 const formatoFecha = (fecha: string) => {
     return dayjs(fecha).format('DD/MM/YYYY');
+};
+
+const editarSancion = (id: string) => {
+    router.push({ name: 'sancion-edit', params: { id } });
 };
 
 const desactivarSancion = async (id: string) => {

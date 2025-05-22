@@ -1,7 +1,7 @@
 <template lang="pug">
 nav#sidenavAccordion.sidemenu.accordion
     .sidemenu-logo
-        img.logo(src='/images/logos/logo.png', alt='logo')
+        img.logo(src='/images/logos/logoHJ.png', alt='logo')
 
     .sidemenu-nav
         //- p paco
@@ -13,7 +13,8 @@ nav#sidenavAccordion.sidemenu.accordion
             .nav-link-icon
                 i.fas.fa-user-circle
             .nav-link-text My Profile
-        RouterLink.nav-link(:to='{ name: "user-list" }', v-if='isAdmin', title='Users')
+        //- RouterLink.nav-link(:to='{ name: "user-list" }', v-if='isAdmin', title='Users')
+        RouterLink.nav-link(:to='{ name: "user-list" }', v-if='isCoordinador', title='Gestión de usuarios')
             .nav-link-icon
                 i.fas.fa-users
             .nav-link-text Users
@@ -102,7 +103,7 @@ import { userInfo } from '@/store/UserInfo';
 
 import { createPopper, type Instance } from '@popperjs/core';
 
-const { role, username, isAdmin, isUser } = useUserInfo();
+const { role, username, isCoordinador, isEducador } = useUserInfo();
 
 let popperInstance: Instance | null = null;
 const elUserInfo = ref<HTMLElement>();

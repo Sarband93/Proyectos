@@ -32,9 +32,13 @@
                                             span.highlight-rosa.small-text {{ intol }}
                                         div(v-for='(med, i) in menor.medicaciones', :key='`med-${i}`')
                                             span.highlight-azul.small-text {{ med }}
+                                        span.etiqueta.bg-amarillo(v-for='(p, i) in menor.protocolosEspeciales', :key='`pro-${i}`')
+                                            | {{ p }}
                                     div(v-if='menor.sancionesActivas?.length')
                                         div(v-for='s in menor.sancionesActivas', :key='s._id')
-                                            small.underline-gris(v-if='s.tipo === "SG"') SG hasta {{ formatearFechaFinSancion(s.fechaFin) }}
+                                            //small.underline-gris(v-if='s.tipo === "SG"') SG hasta {{ formatearFechaFinSancion(s.fechaFin) }}
+                                            small.underline-gris(v-if='["SG", "PAR"].includes(s.tipo)')
+                                                | {{ s.tipo }} hasta {{ formatearFechaFinSancion(s.fechaFin) }}
                             .p-1.rounded(v-else-if='hab.menores.length === 1')
                                 span.badge.nombre-menor.bg-secondary(
                                     @click.stop='irADetalleMenor(hab.menores[0]._id)',
@@ -53,9 +57,14 @@
                                         span.highlight-rosa.small-text {{ intol }}
                                     div(v-for='(med, i) in hab.menores[0].medicaciones', :key='`med-${i}`')
                                         span.highlight-azul.small-text {{ med }}
+                                    span.etiqueta.bg-amarillo.small-text(
+                                        v-for='(p, i) in hab.menores[0].protocolosEspeciales',
+                                        :key='`pro0-${i}`')
+                                        | {{ p }}
                                 div(v-if='hab.menores[0].sancionesActivas?.length')
                                     div(v-for='s in hab.menores[0].sancionesActivas', :key='s._id')
-                                        small.underline-gris.small-text(v-if='s.tipo === "SG"') SG hasta ({{ formatearFechaFinSancion(s.fechaFin) }})
+                                        small.underline-gris(v-if='["SG", "PAR"].includes(s.tipo)')
+                                            | {{ s.tipo }} hasta {{ formatearFechaFinSancion(s.fechaFin) }}
                             div(v-else)
                                 span.text-muted vacía
 </template>
@@ -141,8 +150,73 @@ onMounted(() => {
     obtenerCuadrante();
 });
 </script>
-
 <style scoped>
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.bg-pastel-rojo {
+    background-color: #f8d7da !important;
+}
+.bg-pastel-amarillo {
+    background-color: #fff3cd !important;
+}
+.bg-pastel-azul {
+    background-color: #d1ecf1 !important;
+}
+.cursor-pointer {
+    cursor: pointer;
+}
+.etiqueta {
+    margin-left: 4px;
+    padding: 2px 6px;
+    font-size: 0.65rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-radius: 6px;
+    display: inline-block;
+}
+.bg-rojo {
+    background-color: crimson;
+    color: white;
+}
+.bg-morado {
+    background-color: purple;
+    color: white;
+}
+.bg-amarillo {
+    background-color: gold;
+    color: black;
+}
+.nombre-menor {
+    font-size: 0.85rem;
+    font-weight: bold;
+    text-decoration: underline;
+    color: white !important;
+}
+.highlight-rosa {
+    background-color: hotpink;
+    color: white;
+    padding: 0 4px;
+    border-radius: 3px;
+}
+.highlight-azul {
+    background-color: #0aa6e4;
+    color: white;
+    padding: 0 4px;
+    border-radius: 3px;
+}
+.underline-gris {
+    color: gray;
+    font-weight: bold;
+}
+.small-text {
+    font-size: 0.6rem;
+}
+</style>
+
+<!-- <style scoped>
 .bg-gray-dark {
     background-color: #a9a9a9 !important;
 }
@@ -171,6 +245,10 @@ onMounted(() => {
 .bg-morado {
     background-color: purple;
 }
+.bg-amarillo {
+    background-color: gold;
+    color: black;
+}
 .nombre-menor {
     color: white !important;
     text-decoration: underline;
@@ -193,6 +271,6 @@ onMounted(() => {
     font-weight: bold;
 }
 .small-text {
-    font-size: 0.7rem;
+    font-size: 0.6rem;
 }
-</style>
+</style> -->

@@ -4,20 +4,16 @@ import { userInfo } from '@/store/UserInfo';
 export function useUserInfo() {
     const user = userInfo();
 
-    const username = computed(() => {
-        return userInfo().info.email;
-    });
-    const role = computed(() => {
-        return userInfo().info.role;
-    });
+    const username = computed(() => user.info.name || user.info.email);
+    const role = computed(() => user.info.role);
 
-    const isAdmin = computed(() => {
-        return user.isAdmin;
-    });
-    const isUser = computed(() => {
-        return user.isUser;
-    });
+    const isCoordinador = computed(() => user.info.role === 'coordinador');
+    const isEducador = computed(() => user.info.role === 'educador');
 
-    // expose manages state
-    return { username, role, isAdmin, isUser };
+    return {
+        username,
+        role,
+        isCoordinador,
+        isEducador
+    };
 }

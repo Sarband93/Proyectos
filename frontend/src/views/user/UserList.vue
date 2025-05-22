@@ -1,7 +1,7 @@
 <template lang="pug">
 NavView.view-user-list(icon='fas fa-users', title='Users')
     template(#header-right)
-        button.btn.btn-primary.btn-sm(@click='$router.push({ name: "user-add" })')
+        button.btn.btn-primary.btn-sm(v-if='isCoordinador', @click='$router.push({ name: "user-add" })')
             i.fas.fa-plus
             span.ms-2 Add
     //- .view-user-list
@@ -25,21 +25,24 @@ NavView.view-user-list(icon='fas fa-users', title='Users')
                                 td(scope='row') {{ user.name }} {{ user.surname }}
                                 td.text-end
                                     BButton(
-                                        v-if='!user.active',
+                                        v-if='isCoordinador && !user.active',
                                         variant='primary',
                                         size='sm',
                                         @click='activateUser(user.email)',
                                         :busy='busy') Activate
                                     BButton(
-                                        v-if='user.active',
+                                        v-if='isCoordinador && user.active',
                                         variant='warning',
                                         size='sm',
                                         @click='deactivateUser(user.email)',
-                                        :busy='busy') Deactivate
+                                        :busy='busy') Desactivate
                                 td.text-end
                                     button.btn.btn-sm.fs-6(type='button', @click='editUser(user._id)')
                                         i.fas.fa-pencil-alt.text-success
-                                    button.btn.btn-sm.fs-6(v-if='user.email !== userEmail', type='button', @click='deleteUser(user)')
+                                    button.btn.btn-sm.fs-6(
+                                        v-if='isCoordinador && user.email !== userEmail',
+                                        type='button',
+                                        @click='deleteUser(user)')
                                         i.fa.fa-trash-alt.text-danger
 </template>
 
@@ -56,6 +59,10 @@ import NavView from '@/components/nav/NavView.vue';
 import type { TUser } from '@/helpers/types';
 import { treatError, confirm, alert } from '@/helpers/Utilities';
 
+import { useUserInfo } from '@/helpers/useUserInfo';
+
+const { isCoordinador } = useUserInfo();
+
 const userEmail = ref(userInfo().info.email);
 const loading = ref(false);
 const busy = ref(false);
@@ -64,9 +71,10 @@ const listUsers = ref([] as TUser[]);
 async function loadUsers() {
     try {
         loading.value = true;
-        const resp = await axios.get(paths.user.get());
+        const resp = await axios.get(paths.user.users());
         listUsers.value = resp.data;
     } catch (error) {
+        console.error('[UserList] Error al cargar usuarios:', error);
         treatError(error, 'Error loading users!');
     } finally {
         loading.value = false;
@@ -103,7 +111,7 @@ async function activateUser(email: string) {
 async function deactivateUser(email: string) {
     try {
         busy.value = true;
-        await axios.put(paths.user.deactivate(email));
+        await axios.put(paths.user.desactivate(email));
         alert('success', 'User deactivated successfully.');
         loadUsers();
     } catch (error: any) {

@@ -17,16 +17,23 @@ export default class PathsUser {
 
     auth = {
         login: () => {
-            return this.prependDom('/login');
+            return this.prependDom('/api/auth/login');
         },
         renew: () => {
-            return this.prependDom('/renew');
-        }
+            return this.prependDom('/api/auth/renew');
+        },
+        forgot: () => {
+            return this.prependDom('/api/auth/forgot-password');
+        },
+        setPass: () => {
+            return this.prependDom('/api/auth/set-password');
+        },
+        register: () => this.prependDom('/api/auth/register')
     };
 
     user = {
         profile: (): string => {
-            return this.prependDom(`/user/profile`);
+            return this.prependDom(`/api/usuarios/perfil`);
         },
         preferences: (): string => {
             return this.prependDom('/user/preferences');
@@ -38,11 +45,23 @@ export default class PathsUser {
             return this.prependDom('/user/roles');
         },
         users: (id?: string): string => {
-            if (id) return this.prependDom(`/user/users/${id}`);
-            return this.prependDom('/user/users');
+            if (id) return this.prependDom(`/api/usuarios/${id}`);
+            return this.prependDom('/api/usuarios');
         },
         passwordChange: (): string => {
             return this.prependDom('/user/change-password');
+        },
+        active: (email: string): string => {
+            return this.prependDom(`/api/usuarios/activar/${email}`);
+        },
+        desactivate: (email: string): string => {
+            return this.prependDom(`/api/usuarios/desactivar/${email}`);
+        },
+        delete: (id: string): string => {
+            return this.prependDom(`/api/usuarios/${id}`);
+        },
+        edit: (): string => {
+            return this.prependDom('/api/usuarios/perfil');
         }
     };
 

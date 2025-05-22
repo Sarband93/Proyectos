@@ -52,7 +52,15 @@ export const createSancion = async (
   next: NextFunction
 ) => {
   try {
-    const nueva = new Sancion(req.body)
+    // const nueva = new Sancion(req.body)
+
+    // SI NO FUNCIONA ELIMINAR Y ABRIR LA LINEA DE ARRIBA
+    const nueva = new Sancion({
+      ...req.body,
+      fecha: new Date(req.body.fecha),
+      fechaFin: new Date(req.body.fechaFin),
+    });
+
     const guardada = await nueva.save()
     res.status(201).json(guardada)
   } catch (error) {
@@ -67,11 +75,23 @@ export const updateSancion = async (
   next: NextFunction
 ) => {
   try {
+    // const actualizada = await Sancion.findByIdAndUpdate( 
+    //   req.params.id,
+    //   req.body,
+    //   { new: true }
+    // )
+
+    //SI NO FUNCIONA ELIMINAR ESTA FUNCION Y ARBRIR LA DE ARRIBA
     const actualizada = await Sancion.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      {
+        ...req.body,
+        fecha: new Date(req.body.fecha),
+        fechaFin: new Date(req.body.fechaFin),
+      },
       { new: true }
-    )
+    );
+
 
     if (!actualizada) throw new NotFoundError('Sanción no encontrada')
     res.json(actualizada)

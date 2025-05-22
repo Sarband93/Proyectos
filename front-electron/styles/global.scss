@@ -1,0 +1,43 @@
+// @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+// @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+html,
+body {
+    min-height: 100vh;
+    background-color: $gray-100;
+    // overflow: auto;
+    // font-family: 'Roboto', sans-serif;
+    // font-family: 'Poppins', sans-serif;
+    font-family: 'Fira Sans', sans-serif;
+}
+
+.v-select {
+    background-color: $white;
+
+    // .vue-input input {
+    //     font-size: unset;
+    // }
+
+    // .vue-dropdown-item.selected {
+    //     background-color: map-get($theme-colors, 'info');
+    //     color: $white;
+    // }
+
+    .vs__dropdown-option--highlight {
+        background-color: map-get($theme-colors, 'primary');
+        color: $white;
+    }
+}
+.vs__dropdown-menu {
+    z-index: 4000;
+}
+
+img.logo {
+    max-height: 138px;
+    max-width: 100%;
+}
+
+.pointer {
+    cursor: pointer;
+}

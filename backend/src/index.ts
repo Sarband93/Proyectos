@@ -13,6 +13,7 @@ import routingHabitacion from './routes/habitacion_route';
 import routingEducador from './routes/educador_route';
 import routingSancion from './routes/sancion_route';
 import routingAuth from './routes/auth_route';
+import routingUsuario from './routes/usuario_route';
 import { poblarDatosSiNecesario } from './utils/datos_controlado';
 
 dotenv.config();
@@ -31,6 +32,7 @@ routingHabitacion(app);
 routingEducador(app);
 routingSancion(app);
 routingAuth(app);
+routingUsuario(app);
 
 // Ruta de prueba
 app.get('/', (_req, res) => {

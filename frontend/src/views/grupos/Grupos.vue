@@ -1,7 +1,7 @@
 <template lang="pug">
 NavView.view-grupos(icon='fa fa-layer-group', title='Grupos')
     template(#header-right)
-        button.btn.btn-success(@click='irANuevoGrupo') + Añadir grupo
+        button.btn.btn-success(v-if='isCoordinador', @click='irANuevoGrupo') + Añadir grupo
 
     .container.mt-4
         table.table.table-striped.table-bordered
@@ -14,8 +14,8 @@ NavView.view-grupos(icon='fa fa-layer-group', title='Grupos')
                     td {{ grupo.nombre }}
                     td
                         button.btn.btn-sm.btn-primary(@click='verDetalles(grupo._id)') Ver
-                        button.btn.btn-sm.btn-warning.ms-2(@click='editarGrupo(grupo._id)') Editar
-                        button.btn.btn-sm.btn-danger.ms-2(@click='eliminarGrupo(grupo._id)') Eliminar
+                        button.btn.btn-sm.btn-warning.ms-2(v-if='isCoordinador', @click='editarGrupo(grupo._id)') Editar
+                        button.btn.btn-sm.btn-danger.ms-2(v-if='isCoordinador', @click='eliminarGrupo(grupo._id)') Eliminar
 </template>
 
 <script setup lang="ts">
@@ -23,11 +23,14 @@ import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
 import NavView from '@/components/nav/NavView.vue';
+import { useUserInfo } from '@/helpers/useUserInfo';
 
 interface Grupo {
     _id: string;
     nombre: string;
 }
+
+const { isCoordinador } = useUserInfo();
 
 const grupos = ref<Grupo[]>([]);
 const router = useRouter();

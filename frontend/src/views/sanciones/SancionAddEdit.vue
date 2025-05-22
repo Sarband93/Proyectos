@@ -1,5 +1,9 @@
 <template lang="pug">
 NavView.view-sancion-add-edit(icon='fas fa-gavel', :title='isAdd ? "Nueva sanción" : "Editar sanción"')
+    template(#header-right)
+        button.btn.btn-outline-dark.me-2(@click='volver')
+            i.fas.fa-arrow-left.me-2
+            | Volver
     .container
         form(@submit.prevent='guardarSancion')
             .mb-3
@@ -34,9 +38,17 @@ NavView.view-sancion-add-edit(icon='fas fa-gavel', :title='isAdd ? "Nueva sanci�
                 label.form-label Observaciones
                 textarea.form-control(v-model='sancion.observaciones')
 
+            //- .mb-3
+            //-     label.form-label Fecha
+            //-     input.form-control(type='date', v-model='sancion.fecha')
             .mb-3
-                label.form-label Fecha
-                input.form-control(type='date', v-model='sancion.fecha')
+                label.form-label Inicio de sanción
+                input.form-control(type='datetime-local', v-model='sancion.fecha', required)
+
+            .mb-3
+                label.form-label Fin de sanción
+                input.form-control(type='datetime-local', v-model='sancion.fechaFin', required)
+            //-
 
             .mb-3
                 label.form-label Duración (en bloques)
@@ -69,6 +81,7 @@ const sancion = ref({
     descripcion: '',
     observaciones: '',
     fecha: new Date().toISOString().split('T')[0],
+    fechaFin: '',
     duracionBloques: 0,
     activa: true
 });
@@ -76,7 +89,7 @@ const sancion = ref({
 const menores = ref<any[]>([]);
 const educadores = ref<any[]>([]);
 
-const tipos = ['PAR', 'SG', 'Educador', 'Lavandería', 'Aula', 'Separación', 'Otras'];
+const tipos = ['PAR', 'SG'];
 const motivos = [
     'Comedor',
     'Fuga',
@@ -105,10 +118,29 @@ const obtenerEducadores = async () => {
     educadores.value = res.data;
 };
 
+// const obtenerSancion = async () => {
+//     const res = await axios.get(`http://localhost:3000/api/sanciones/${route.params.id}`);
+
+//     sancion.value = res.data;
+
+//     sancion.value.menorId = res.data.menorId?._id || '';
+//     sancion.value.educadorId = res.data.educadorId?._id || '';
+
+//     sancion.value.fecha = res.data.fecha?.split('T')[0];
+// };
+
 const obtenerSancion = async () => {
     const res = await axios.get(`http://localhost:3000/api/sanciones/${route.params.id}`);
+
     sancion.value = res.data;
-    sancion.value.fecha = res.data.fecha?.split('T')[0];
+
+    // Ajustar los campos que vienen poblados como objetos
+    sancion.value.menorId = res.data.menorId?._id || '';
+    sancion.value.educadorId = res.data.educadorId?._id || '';
+
+    // Convertir fecha y fechaFin al formato que entiende datetime-local
+    sancion.value.fecha = res.data.fecha?.slice(0, 16);
+    sancion.value.fechaFin = res.data.fechaFin?.slice(0, 16);
 };
 
 const guardarSancion = async () => {

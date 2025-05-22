@@ -15,24 +15,29 @@ export const login = async (
         const usuario = await Usuario.findOne({ email });
 
         if (!usuario) throw new BadRequestError('Usuario no encontrado');
-
+        if (!usuario.isActive) {
+            throw new BadRequestError('El usuario debe ser validado por un coordinador');
+        }
         const passwordValida = await bcrypt.compare(password, usuario.password);
 
         if (!passwordValida) throw new BadRequestError('Contraseña incorrecta');
 
+        const expiresIn = 60 * 60;
         const token = jwt.sign(
-            { id: usuario._id, rol: usuario.rol },
+            { id: usuario._id, role: usuario.role },
             process.env.JWT_SECRET as string,
-            { expiresIn: '8h' }
+            { expiresIn: expiresIn }
         );
 
         res.json({
             token,
             usuario: {
                 id: usuario._id,
-                nombre: usuario.nombre,
+                name: usuario.name,
+                surname: usuario.surname,
                 email: usuario.email,
-                rol: usuario.rol,
+                role: usuario.role,
+                expires: Date.now() + expiresIn * 1000
             },
         });
     } catch (error) {
@@ -40,33 +45,39 @@ export const login = async (
     }
 };
 
-// CREAR USUARIO
 export const crearUsuario = async (
     req: Request,
     res: Response,
     next: NextFunction
 ) => {
     try {
-        const { nombre, email, password, rol } = req.body;
+        const { name, surname, nickName, email, password } = req.body;
 
         const existe = await Usuario.findOne({ email });
         if (existe) throw new BadRequestError('El email ya está en uso');
 
-        const hashedPassword = await bcrypt.hash(password, 10);
-
         const nuevo = new Usuario({
-            nombre,
+            name,
+            surname,
+            nickName,
             email,
-            password: hashedPassword,
-            rol,
+            password,
+            role: 'educador'  
         });
 
         const guardado = await nuevo.save();
         res.status(201).json({
-            message: 'Usuario creado',
-            usuario: guardado,
+            message: 'Usuario creado correctamente',
+            usuario: {
+                id: guardado._id,
+                name: guardado.name,
+                surname: guardado.surname,
+                email: guardado.email,
+                role: guardado.role
+            }
         });
     } catch (error) {
         next(error);
     }
 };
+

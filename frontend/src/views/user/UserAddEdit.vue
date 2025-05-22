@@ -83,7 +83,7 @@ async function getUser(id: string) {
     }
 }
 async function getAllRoles() {
-    listRoles.value = ['admin', 'user'];
+    listRoles.value = ['Coordinador', 'Educador'];
     // try {
     //     const resp = await axios.get(paths.user.roles());
     //     listRoles.value = resp.data;

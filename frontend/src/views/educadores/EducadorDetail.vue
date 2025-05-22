@@ -5,7 +5,7 @@ NavView.view-educador-detail(icon='fa fa-user-tie', title='Detalle del Educador'
             i.fas.fa-arrow-left.me-2
             | Volver
 
-        button.btn.btn-warning(@click='editarEducador')
+        button.btn.btn-warning(v-if='isCoordinador', @click='editarEducador')
             i.fas.fa-pen.me-2
             | Editar
 
@@ -24,9 +24,11 @@ import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
 import NavView from '@/components/nav/NavView.vue';
+import { useUserInfo } from '@/helpers/useUserInfo';
 
 const route = useRoute();
 const router = useRouter();
+const { isCoordinador } = useUserInfo();
 
 interface Educador {
     nombre: string;

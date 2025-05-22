@@ -1,7 +1,11 @@
 <template lang="pug">
 NavView.view-grupo-add-edit(icon='fas fa-users', :title='isAdd ? "Añadir grupo" : "Editar grupo"')
+    template(#header-right)
+        button.btn.btn-outline-dark.me-2(@click='volver')
+            i.fas.fa-arrow-left.me-2
+            | Volver
     .container
-        form(@submit.prevent='guardarGrupo')
+        form(v-if='isCoordinador', @submit.prevent='guardarGrupo')
             .mb-3
                 label.form-label(for='nombre') Nombre del grupo
                 input#nombre.form-control(type='text', v-model='grupo.nombre', required)
@@ -25,7 +29,9 @@ import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
 import { alert } from '@/helpers/Utilities';
 import NavView from '@/components/nav/NavView.vue';
+import { useUserInfo } from '@/helpers/useUserInfo';
 
+const { isCoordinador } = useUserInfo();
 const route = useRoute();
 const router = useRouter();
 

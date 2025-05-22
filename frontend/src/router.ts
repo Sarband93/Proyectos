@@ -176,4 +176,36 @@ const router = createRouter({
     routes
 });
 
+// Protección de rutas por autenticación y rol
+router.beforeEach((to, _from, next) => {
+    const store = userInfo();
+    const role = store.info.role;
+    const isLoggedIn = !!store.info.token;
+
+    // Rutas públicas
+    const publicRoutes = ['login', 'user-register', 'user-forgot-pass', 'user-forgot-set'];
+    if (publicRoutes.includes(to.name as string)) return next();
+
+    // Rutas protegidas: necesita login
+    if (!isLoggedIn) return next({ name: 'login' });
+
+    // Rutas solo para coordinadores
+    const soloCoordinador = [
+        'user-list',
+        'user-add',
+        'user-edit',
+        'grupo-add',
+        'grupo-edit',
+        'grupo-delete', // si existiera
+        'educador-add',
+        'educador-edit'
+    ];
+
+    if (soloCoordinador.includes(to.name as string) && role !== 'coordinador') {
+        return next({ name: 'dashboard' });
+    }
+
+    next();
+});
+
 export default router;

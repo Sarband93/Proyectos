@@ -9,21 +9,24 @@ import {
     liberarHabitacionMenor,
 } from '../controllers/menor_controller';
 
+import { Auth } from '../middlewares/Auth';
+import { Role } from '../middlewares/Role';
+
 function routingMenor(app: Express): void {
     // GET MENORES
-    app.get('/api/menores', getMenores);
+    app.get('/api/menores', Auth, getMenores);
     // POST MENOR
-    app.post('/api/menores', createMenor);
+    app.post('/api/menores', Auth, createMenor);
     // GET MENOR POR ID
-    app.get('/api/menores/:id', getMenorById);
+    app.get('/api/menores/:id', Auth, getMenorById);
     //PUT MENOR
-    app.put('/api/menores/:id', updateMenor);
+    app.put('/api/menores/:id', Auth, updateMenor);
     //DELETE MENOR
-    app.delete('/api/menores/:id', deleteMenor);
+    app.delete('/api/menores/:id', Auth, Role('coordinador'), deleteMenor);
     //GET MENORES POR FILTRO
-    app.get('/api/menores/buscar', buscarMenores);
+    app.get('/api/menores/buscar', Auth, buscarMenores);
     //PUT LIBERAR HABITACION
-    app.put('/api/menores/liberar-habitacion/:id', liberarHabitacionMenor);
+    app.put('/api/menores/liberar-habitacion/:id', Auth, liberarHabitacionMenor);
 
 }
 

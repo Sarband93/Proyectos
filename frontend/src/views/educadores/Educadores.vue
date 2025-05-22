@@ -1,7 +1,7 @@
 <template lang="pug">
 NavView.view-educadores(icon='fas fa-chalkboard-teacher', title='Lista de educadores')
     template(#header-right)
-        button.btn.btn-success(@click='irANuevoEducador') + Añadir educador
+        button.btn.btn-success(v-if='isCoordinador', @click='irANuevoEducador') + Añadir educador
 
     .container
         table.table.table-bordered.table-striped.mt-3
@@ -20,15 +20,15 @@ NavView.view-educadores(icon='fas fa-chalkboard-teacher', title='Lista de educad
                     td {{ educador.grupoAsignado?.nombre || 'Sin grupo' }}
                     td
                         button.btn.btn-sm.btn-primary(@click='verEducador(educador._id)') Ver
-                        button.btn.btn-sm.btn-warning.ms-2(@click='editarEducador(educador._id)') Editar
-                        button.btn.btn-sm.btn-danger.ms-2(@click='eliminarEducador(educador._id)') Eliminar
+                        button.btn.btn-sm.btn-warning.ms-2(v-if='isCoordinador', @click='editarEducador(educador._id)') Editar
+                        button.btn.btn-sm.btn-danger.ms-2(v-if='isCoordinador', @click='eliminarEducador(educador._id)') Eliminar
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
-
+import { useUserInfo } from '@/helpers/useUserInfo';
 import NavView from '@/components/nav/NavView.vue';
 
 interface Educador {
@@ -43,6 +43,7 @@ interface Educador {
 
 const educadores = ref<Educador[]>([]);
 const router = useRouter();
+const { isCoordinador } = useUserInfo();
 
 const obtenerEducadores = async () => {
     try {

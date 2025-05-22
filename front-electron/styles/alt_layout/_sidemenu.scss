@@ -1,0 +1,107 @@
+$color-link-icon: #aaa;
+$color-link-text: #777;
+$color-link-sel: #333;
+$color-link-hover: #d5d5d5;
+$border-radius: 0.25rem;
+
+nav.sidemenu {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    flex-wrap: nowrap;
+
+    .sidemenu-logo {
+        padding-bottom: 1rem;
+        img.logo {
+            max-height: 48px;
+        }
+    }
+
+    .sidemenu-nav {
+        flex-grow: 1;
+        overflow: auto;
+
+        // display: flex;
+        // flex-direction: column;
+        // gap: 0.25rem;
+
+        .nav-link {
+            margin-bottom: 0.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            // padding-top: 0.75rem;
+            // padding-bottom: 0.75rem;
+            padding: 0.5rem;
+            // position: relative;
+            color: $color-link-text;
+            // transition: background-color 0.1s linear;
+            border-radius: $border-radius;
+
+            .nav-link-icon {
+                // font-size: 0.9rem;
+                width: 22px;
+                font-size: 18px;
+                line-height: 1;
+                color: $color-link-icon;
+            }
+            .collapse-arrow {
+                color: $color-link-sel;
+            }
+
+            .nav-link-text {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                font-size: 95%;
+                font-weight: 500;
+                flex: 1;
+            }
+
+            &:hover {
+                background-color: $color-link-hover;
+            }
+
+            &.router-link-exact-active {
+                font-weight: 600;
+                color: $color-link-sel;
+                background-color: $color-link-hover;
+                .nav-link-icon {
+                    color: $color-link-sel;
+                }
+            }
+        }
+
+        .sidemenu-nav-nested {
+            margin-left: 2rem;
+            flex-direction: column;
+            font-style: italic;
+            font-weight: 300;
+        }
+    }
+
+    .sidemenu-sep {
+        border-top: 1px solid #aaa;
+        margin: 0.25rem 40px;
+    }
+    .sidemenu-footer {
+        padding: 0.75rem 0.25rem;
+        flex-shrink: 0;
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+
+            padding: 0.5rem;
+            background-color: $color-link-hover;
+            border-radius: $border-radius;
+
+            .role-img {
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+            }
+        }
+    }
+}

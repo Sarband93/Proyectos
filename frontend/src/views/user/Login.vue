@@ -2,14 +2,14 @@
 .container.pt-5
     .py-4.px-2.p-md-4.p-md-4.mb-4.bg-light.rounded-3
         .col-12.offset-md-3.col-md-6.offset-lg-4.col-lg-4.text-center
-            img.logo(src='/images/logos/logo.png')
+            img.logo(src='/images/logos/logoHJ.png')
         .h4.text-center.my-3 {{ appTitle }} / Login
 
         .col-12.offset-md-3.col-md-6
             form(@submit.prevent='onSubmit')
                 .form-floating.mb-3
                     input#inputUsername.form-control(type='text', placeholder='Email', v-model='username')
-                    label(for='inputUsername') Username
+                    label(for='inputUsername') Email
                 .form-floating.mb-3
                     input#inputPassword.form-control(type='password', placeholder='Password', v-model='password')
                     label(for='inputPassword') Password

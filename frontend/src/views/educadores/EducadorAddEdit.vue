@@ -1,7 +1,11 @@
 <template lang="pug">
 NavView.view-educador-add-edit(icon='fas fa-user-plus', :title='isAdd ? "Añadir educador" : "Editar educador"')
+    template(#header-right)
+        button.btn.btn-outline-dark.me-2(@click='volver')
+            i.fas.fa-arrow-left.me-2
+            | Volver
     .container
-        form(@submit.prevent='guardarEducador')
+        form(v-if='isCoordinador', @submit.prevent='guardarEducador')
             .mb-3
                 label.form-label(for='nombre') Nombre
                 input#nombre.form-control(type='text', v-model='educador.nombre', required)
@@ -36,9 +40,11 @@ import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
 import NavView from '@/components/nav/NavView.vue';
 import { alert } from '@/helpers/Utilities';
+import { useUserInfo } from '@/helpers/useUserInfo';
 
 const route = useRoute();
 const router = useRouter();
+const { isCoordinador } = useUserInfo();
 
 const isAdd = computed(() => !route.params.id);
 

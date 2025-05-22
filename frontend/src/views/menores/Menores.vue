@@ -22,7 +22,7 @@ NavView.view-menores(icon='fa fa-users', title='Lista de menores')
                     td
                         button.btn.btn-sm.btn-primary(@click='verDetalles(menor)') Ver
                         button.btn.btn-sm.btn-warning.ms-2(@click='editarMenor(menor._id)') Editar
-                        button.btn.btn-sm.btn-danger.ms-2(@click='eliminarMenor(menor._id)') Eliminar
+                        button.btn.btn-sm.btn-danger.ms-2(v-if='isCoordinador', @click='eliminarMenor(menor._id)') Eliminar
 </template>
 
 <script setup lang="ts">
@@ -30,6 +30,8 @@ import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
 import dayjs from 'dayjs';
+import { userInfo } from '@/store/UserInfo';
+import { useUserInfo } from '@/helpers/useUserInfo';
 
 import NavView from '@/components/nav/NavView.vue';
 
@@ -57,6 +59,8 @@ interface Menor {
 const router = useRouter();
 const menores = ref<Menor[]>([]);
 const busqueda = ref('');
+const userRol = userInfo().info.role;
+const { isCoordinador } = useUserInfo();
 
 const obtenerMenores = async () => {
     try {

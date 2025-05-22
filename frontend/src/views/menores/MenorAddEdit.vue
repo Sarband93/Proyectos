@@ -1,5 +1,9 @@
 <template lang="pug">
 NavView.view-menor-add-edit(icon='fas fa-user-plus', :title='isAdd ? "Añadir menor" : "Editar menor"')
+    template(#header-right)
+        button.btn.btn-outline-dark.me-2(@click='volver')
+            i.fas.fa-arrow-left.me-2
+            | Volver
     .container
         form(@submit.prevent='guardarMenor')
             .mb-3
@@ -209,7 +213,7 @@ const menor = ref({
     habitacionId: ''
 });
 
-const protocolosDisponibles = ['Riesgo de fuga', 'Protocolo Educador', 'Protocolo Lavandería', 'Llamadas Supervisadas'];
+const protocolosDisponibles = ['Riesgo de fuga', 'P.Educador', 'P.Lavandería', 'Llamadas Supervisadas'];
 
 // DIETAS
 const nuevaDieta = ref('');

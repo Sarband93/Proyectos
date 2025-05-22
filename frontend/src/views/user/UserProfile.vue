@@ -63,12 +63,18 @@ const password = ref('');
 const password2 = ref('');
 
 async function submitData() {
+    if ((password.value || password2.value) && password.value !== password2.value) {
+        alert('error', 'Passwords do not match');
+        return;
+    }
+
     const data = {
         name: userName.value,
         surname: userSurname.value,
         password: password.value,
         password2: password2.value
     };
+
     try {
         await axios.put(paths.user.edit(), data);
         alert('success', 'Your data was updated!');
